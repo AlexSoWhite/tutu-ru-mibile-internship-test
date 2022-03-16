@@ -3,14 +3,15 @@ package com.nafanya.tuturutest.view
 import android.app.ActivityOptions
 import android.content.Intent
 import android.os.Build
+import android.util.Pair
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.Gson
 import com.nafanya.tuturutest.R
 import com.nafanya.tuturutest.databinding.ActivityMainBinding
@@ -28,13 +29,12 @@ class MainActivity : AppCompatActivity() {
         viewModel = ViewModelProvider(this)[MainActivityViewModel::class.java]
         viewModel.getAll()
         val observer = Observer<List<Anime>> {
-            binding.recycler.adapter = Adapter(it) { anime, view ->
+            binding.recycler.adapter = Adapter(it) { anime, listItemBinding ->
                 var bundle: Bundle? = null
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
                     val options = ActivityOptions.makeSceneTransitionAnimation(
                         this,
-                        view,
-                        getString(R.string.anime_item_detail_transition)
+                        Pair.create(listItemBinding.image, getString(R.string.anime_item_image_transition))
                     )
                     bundle = options.toBundle()
                 }
