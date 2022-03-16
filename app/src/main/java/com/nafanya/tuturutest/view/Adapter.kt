@@ -11,7 +11,7 @@ import com.nafanya.tuturutest.model.animeObjects.Anime
 
 class Adapter(
     private val list: List<Anime>,
-    private val callback: (Anime) -> Unit
+    private val callback: (Anime, View) -> Unit
 ) : RecyclerView.Adapter<Adapter.AnimeViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AnimeViewHolder {
@@ -30,7 +30,7 @@ class Adapter(
 
     class AnimeViewHolder(
         itemView: View,
-        private val callback: (Anime) -> Unit
+        private val callback: (Anime, View) -> Unit
     ) : RecyclerView.ViewHolder(itemView) {
 
         private var binding = AnimeListItemBinding.bind(itemView)
@@ -39,7 +39,7 @@ class Adapter(
             binding.anime = anime
             Glide.with(itemView).load("https://media.kitsu.io/anime/poster_images/${anime.id}/tiny.jpg").into(binding.image)
             binding.item.setOnClickListener {
-                callback(anime)
+                callback(anime, binding.image)
             }
         }
     }

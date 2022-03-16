@@ -3,4 +3,5 @@
     <string name="users">Users: %1$s</string>
     <string name="description">Description:</string>
     <string name="episodes">Number of episodes: %1$s</string>
+    <string name="anime_item_detail_transition">anime_item_detail_transition</string>
 </resources>

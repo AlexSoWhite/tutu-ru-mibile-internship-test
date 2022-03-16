@@ -26,7 +26,8 @@
         <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/image"
             android:layout_width="140dp"
-            android:layout_height="180dp"/>
+            android:layout_height="180dp"
+            android:transitionName="@string/anime_item_detail_transition"/>
 
         <LinearLayout
             android:layout_marginStart="5dp"

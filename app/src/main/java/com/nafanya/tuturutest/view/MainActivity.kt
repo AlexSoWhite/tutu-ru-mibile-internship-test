@@ -1,6 +1,8 @@
 package com.nafanya.tuturutest.view
 
+import android.app.ActivityOptions
 import android.content.Intent
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.databinding.DataBindingUtil
@@ -26,11 +28,24 @@ class MainActivity : AppCompatActivity() {
         viewModel = ViewModelProvider(this)[MainActivityViewModel::class.java]
         viewModel.getAll()
         val observer = Observer<List<Anime>> {
-            binding.recycler.adapter = Adapter(it) { anime ->
+            binding.recycler.adapter = Adapter(it) { anime, view ->
+                var bundle: Bundle? = null
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
+                    val options = ActivityOptions.makeSceneTransitionAnimation(
+                        this,
+                        view,
+                        getString(R.string.anime_item_detail_transition)
+                    )
+                    bundle = options.toBundle()
+                }
                 val detailIntent = Intent(this, AnimeDetailActivity::class.java)
                 val jsonString = Gson().toJson(anime)
                 detailIntent.putExtra("anime", jsonString)
-                startActivity(detailIntent)
+                if (bundle == null) {
+                    startActivity(detailIntent)
+                } else {
+                    startActivity(detailIntent, bundle)
+                }
             }
             binding.recycler.layoutManager = LinearLayoutManager(this)
             binding.recycler.addItemDecoration(
