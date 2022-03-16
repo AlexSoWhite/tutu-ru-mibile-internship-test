@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+<data>
+    <variable
+        name="anime"
+        type="com.nafanya.tuturutest.model.animeObjects.Anime" />
+</data>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:nestedScrollingEnabled="true"
+    android:paddingBottom="20dp">
+
+    <LinearLayout
+        android:id="@+id/item"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginVertical="15dp"
+        android:paddingHorizontal="25dp">
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/image"
+            android:layout_width="140dp"
+            android:layout_height="180dp"/>
+
+        <LinearLayout
+            android:layout_marginStart="5dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@{anime.attributes.canonicalTitle+' '+'('+anime.attributes.averageRating+')'}"
+                tools:text="Tokyo ghoul (88.4)"/>
+
+            <TextView
+                android:layout_marginTop="5dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text='@{"Age rating: "+anime.attributes.ageRatingGuide}'
+                tools:text="Age rating: 18+"/>
+
+            <TextView
+                android:id="@+id/user_count"
+                android:layout_marginTop="5dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="Users: 1234"/>
+
+            <TextView
+                android:layout_marginTop="5dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text='@{"Status: "+anime.attributes.status}'
+                tools:text="Status: finished"/>
+
+            <TextView
+                android:id="@+id/episodes"
+                android:layout_marginTop="5dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="Number of episodes: 20"/>
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <TextView
+        android:layout_marginStart="15dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="18sp"
+        android:text="@string/description"/>
+
+    <TextView
+        android:layout_marginHorizontal="15dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@{anime.attributes.synopsis}"
+        android:textSize="18sp"
+        tools:text="описание"/>
+</LinearLayout>
+</ScrollView>
+</layout>
