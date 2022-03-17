@@ -9,6 +9,7 @@ import android.os.Bundle
 import android.view.KeyEvent
 import android.view.View
 import android.widget.EditText
+import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -98,25 +99,30 @@ class MainActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListener {
     private fun onLoading() {
         binding.loader.visibility = View.VISIBLE
         binding.recycler.visibility = View.GONE
-        binding.error.visibility = View.GONE
+        binding.empty.visibility = View.GONE
     }
 
     private fun onLoaded() {
         binding.loader.visibility = View.GONE
         binding.recycler.visibility = View.VISIBLE
-        binding.error.visibility = View.GONE
+        binding.empty.visibility = View.GONE
     }
 
     private fun onEmpty() {
         binding.loader.visibility = View.GONE
         binding.recycler.visibility = View.GONE
-        binding.error.visibility = View.GONE
+        binding.empty.visibility = View.VISIBLE
     }
 
     private fun onError() {
         binding.loader.visibility = View.GONE
         binding.recycler.visibility = View.GONE
-        binding.error.visibility = View.VISIBLE
+        binding.empty.visibility = View.GONE
+        Toast.makeText(
+            this,
+            "An error occurred",
+            Toast.LENGTH_SHORT
+        ).show()
     }
 
     override fun onRefresh() {
