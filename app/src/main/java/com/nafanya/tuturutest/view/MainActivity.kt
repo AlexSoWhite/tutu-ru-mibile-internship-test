@@ -98,28 +98,24 @@ class MainActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListener {
     private fun onLoading() {
         binding.loader.visibility = View.VISIBLE
         binding.recycler.visibility = View.GONE
-        binding.refresh.visibility = View.GONE
         binding.error.visibility = View.GONE
     }
 
     private fun onLoaded() {
         binding.loader.visibility = View.GONE
         binding.recycler.visibility = View.VISIBLE
-        binding.refresh.visibility = View.VISIBLE
         binding.error.visibility = View.GONE
     }
 
     private fun onEmpty() {
         binding.loader.visibility = View.GONE
         binding.recycler.visibility = View.GONE
-        binding.refresh.visibility = View.VISIBLE
         binding.error.visibility = View.GONE
     }
 
     private fun onError() {
         binding.loader.visibility = View.GONE
         binding.recycler.visibility = View.GONE
-        binding.refresh.visibility = View.GONE
         binding.error.visibility = View.VISIBLE
     }
 

@@ -57,6 +57,7 @@ class MainActivityViewModel : ViewModel() {
             }
 
             override fun onFailure(call: Call<ResultList>, t: Throwable) {
+                list.value = listOf()
                 pageState.value = PageState.IS_ERROR
                 if (callback != null) callback()
             }
