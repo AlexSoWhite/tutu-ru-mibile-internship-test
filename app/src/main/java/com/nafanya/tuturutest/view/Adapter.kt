@@ -5,6 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.nafanya.tuturutest.R
 import com.nafanya.tuturutest.databinding.AnimeListItemBinding
 import com.nafanya.tuturutest.model.animeObjects.Anime
@@ -37,7 +38,9 @@ class Adapter(
 
         fun bind(anime: Anime) {
             binding.anime = anime
-            Glide.with(itemView).load("https://media.kitsu.io/anime/poster_images/${anime.id}/tiny.jpg").into(binding.image)
+            Glide.with(itemView)
+                .load("https://media.kitsu.io/anime/poster_images/${anime.id}/large.jpg")
+                .into(binding.image)
             binding.item.setOnClickListener {
                 callback(anime, binding)
             }
