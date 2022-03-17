@@ -7,6 +7,7 @@ import android.util.Pair
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
+import androidx.appcompat.widget.SearchView
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -28,8 +29,31 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
+        binding.search.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                query?.let {
+                    if (it.isEmpty() or it.isBlank()) {
+                        viewModel.getAll()
+                        true
+                    } else {
+                        viewModel.search(query)
+                        true
+                    }
+                }
+                return false
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                newText?.let {
+                    if (it.isEmpty()) {
+                        viewModel.getAll()
+                        return true
+                    }
+                }
+                return false
+            }
+        })
         viewModel = ViewModelProvider(this)[MainActivityViewModel::class.java]
-        viewModel.getAll()
         val pageStateObserver = Observer<PageState> {
             when(it) {
                 PageState.IS_FIRST_LOADING -> onFirstLoading()
@@ -73,7 +97,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun onFirstLoading() {
-        onLoading()
         viewModel.getAll()
     }
 
@@ -90,7 +113,9 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun onEmpty() {
-
+        binding.loader.visibility = View.INVISIBLE
+        binding.recycler.visibility = View.INVISIBLE
+        binding.error.visibility = View.INVISIBLE
     }
 
     private fun onError() {

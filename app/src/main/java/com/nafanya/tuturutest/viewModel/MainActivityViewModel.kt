@@ -24,11 +24,32 @@ class MainActivityViewModel : ViewModel() {
     }
 
     val pageState: MutableLiveData<PageState> by lazy {
-        MutableLiveData<PageState>(PageState.IS_LOADING)
+        MutableLiveData<PageState>(PageState.IS_FIRST_LOADING)
     }
 
     fun getAll() {
+        pageState.value = PageState.IS_LOADING
         val call = Client.getInstance().getApi().getAll()
+        call.enqueue(object : Callback<ResultList> {
+            override fun onResponse(call: Call<ResultList>, response: Response<ResultList>) {
+                val body = response.body()?.data
+                list.value = body
+                if (body!!.isNotEmpty()) {
+                    pageState.value = PageState.IS_LOADED
+                } else {
+                    pageState.value = PageState.IS_EMPTY
+                }
+            }
+
+            override fun onFailure(call: Call<ResultList>, t: Throwable) {
+                pageState.value = PageState.IS_ERROR
+            }
+        })
+    }
+
+    fun search(query: String) {
+        pageState.value = PageState.IS_LOADING
+        val call = Client.getInstance().getApi().search(query)
         call.enqueue(object : Callback<ResultList> {
             override fun onResponse(call: Call<ResultList>, response: Response<ResultList>) {
                 val body = response.body()?.data
