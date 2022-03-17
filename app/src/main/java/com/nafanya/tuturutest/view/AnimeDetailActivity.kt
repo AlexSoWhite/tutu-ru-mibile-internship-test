@@ -35,9 +35,10 @@ class AnimeDetailActivity : AppCompatActivity() {
         // animate text
         val alphaAnimation = AlphaAnimation(0.0f, 1.0f)
         alphaAnimation.duration = 400L
-        alphaAnimation.startOffset = 200L
-        binding.description.startAnimation(alphaAnimation)
+        alphaAnimation.startOffset = 300L
+        binding.descriptionDetail.startAnimation(alphaAnimation)
         binding.info.startAnimation(alphaAnimation)
+        binding.descriptionHeader.startAnimation(alphaAnimation)
         Glide.with(this)
             .load("https://media.kitsu.io/anime/poster_images/${anime.id}/large.jpg")
             .into(binding.image)
