@@ -13,7 +13,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.google.gson.Gson
 import com.nafanya.tuturutest.R
 import com.nafanya.tuturutest.databinding.AnimeItemDetailBinding
-import com.nafanya.tuturutest.model.animeObjects.Anime
+import com.nafanya.tuturutest.model.Anime
 
 class AnimeDetailActivity : AppCompatActivity() {
 

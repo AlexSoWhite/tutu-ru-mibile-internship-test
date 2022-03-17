@@ -2,7 +2,7 @@ package com.nafanya.tuturutest.viewModel
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.nafanya.tuturutest.model.animeObjects.Anime
+import com.nafanya.tuturutest.model.Anime
 import com.nafanya.tuturutest.model.Client
 import com.nafanya.tuturutest.model.ResultList
 import retrofit2.Call

@@ -5,10 +5,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.nafanya.tuturutest.R
 import com.nafanya.tuturutest.databinding.AnimeListItemBinding
-import com.nafanya.tuturutest.model.animeObjects.Anime
+import com.nafanya.tuturutest.model.Anime
 
 class Adapter(
     private val list: List<Anime>,

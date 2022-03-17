@@ -3,7 +3,7 @@
     <data>
         <variable
             name="anime"
-            type="com.nafanya.tuturutest.model.animeObjects.Anime" />
+            type="com.nafanya.tuturutest.model.Anime" />
     </data>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"

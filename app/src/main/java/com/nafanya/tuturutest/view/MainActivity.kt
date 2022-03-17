@@ -20,7 +20,7 @@ import com.google.gson.Gson
 import com.nafanya.tuturutest.R
 import com.nafanya.tuturutest.databinding.ActivityMainBinding
 import com.nafanya.tuturutest.databinding.AnimeListItemBinding
-import com.nafanya.tuturutest.model.animeObjects.Anime
+import com.nafanya.tuturutest.model.Anime
 import com.nafanya.tuturutest.viewModel.MainActivityViewModel
 import com.nafanya.tuturutest.viewModel.PageState
 
