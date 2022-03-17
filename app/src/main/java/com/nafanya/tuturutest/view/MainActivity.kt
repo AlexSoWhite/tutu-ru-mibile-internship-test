@@ -13,6 +13,7 @@ import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -23,11 +24,15 @@ import com.nafanya.tuturutest.databinding.AnimeListItemBinding
 import com.nafanya.tuturutest.model.Anime
 import com.nafanya.tuturutest.viewModel.MainActivityViewModel
 import com.nafanya.tuturutest.viewModel.PageState
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListener {
 
     private lateinit var viewModel: MainActivityViewModel
     private lateinit var binding: ActivityMainBinding
+    private lateinit var adapter: AnimeListAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,7 +41,7 @@ class MainActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListener {
         binding.search.setOnKeyListener { view, _, keyEvent ->
             if (keyEvent.keyCode == KeyEvent.KEYCODE_ENTER && keyEvent.action == KeyEvent.ACTION_UP) {
                 val text = (view as EditText).text.toString()
-                viewModel.search(text)
+                search(text)
                 // clearing focus from input
                 view.clearFocus()
             }
@@ -60,17 +65,23 @@ class MainActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListener {
             }
         }
         viewModel.pageState.observe(this, pageStateObserver)
-        // observing list
-        val listObserver = Observer<List<Anime>> {
-            binding.recycler.adapter = Adapter(it) { anime, listItemBinding ->
-                startDetailActivity(anime, listItemBinding)
-            }
-            binding.recycler.layoutManager = LinearLayoutManager(this)
-            binding.recycler.addItemDecoration(
-                DividerItemDecoration(this, DividerItemDecoration.VERTICAL)
-            )
+        viewModel.setRepo()
+        adapter = AnimeListAdapter {anime, listItemBinding ->
+            startDetailActivity(anime, listItemBinding)
         }
-        viewModel.list.observe(this, listObserver)
+        binding.recycler.adapter = adapter
+        binding.recycler.layoutManager = LinearLayoutManager(this)
+        binding.recycler.addItemDecoration(
+            DividerItemDecoration(this, DividerItemDecoration.VERTICAL)
+        )
+    }
+
+    private fun search(query: String) {
+        lifecycleScope.launch {
+            viewModel.letAnimeFlow(query).distinctUntilChanged().collectLatest {
+                adapter.submitData(it)
+            }
+        }
     }
 
     private fun startDetailActivity(anime: Anime, listItemBinding: AnimeListItemBinding) {
@@ -93,7 +104,7 @@ class MainActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListener {
     }
 
     private fun onFirstLoading() {
-        viewModel.search("")
+        search("")
     }
 
     private fun onLoading() {
