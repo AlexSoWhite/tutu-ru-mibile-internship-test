@@ -27,9 +27,23 @@ class MainActivityViewModel : ViewModel() {
         MutableLiveData<PageState>(PageState.IS_FIRST_LOADING)
     }
 
-    fun getAll() {
+    private var lastQuery: String = ""
+
+    fun search(query: String, callback: (() -> Unit)? = null) {
         pageState.value = PageState.IS_LOADING
-        val call = Client.getInstance().getApi().getAll()
+        execCall(makeCall(query), callback)
+    }
+
+    private fun makeCall(query: String) : Call<ResultList> {
+        lastQuery = query
+        return if (query.isNotEmpty()) {
+            Client.getInstance().getApi().search(query)
+        } else {
+            Client.getInstance().getApi().getAll()
+        }
+    }
+
+    private fun execCall(call: Call<ResultList>, callback: (() -> Unit)? = null) {
         call.enqueue(object : Callback<ResultList> {
             override fun onResponse(call: Call<ResultList>, response: Response<ResultList>) {
                 val body = response.body()?.data
@@ -39,31 +53,17 @@ class MainActivityViewModel : ViewModel() {
                 } else {
                     pageState.value = PageState.IS_EMPTY
                 }
+                if (callback != null) callback()
             }
 
             override fun onFailure(call: Call<ResultList>, t: Throwable) {
                 pageState.value = PageState.IS_ERROR
+                if (callback != null) callback()
             }
         })
     }
 
-    fun search(query: String) {
-        pageState.value = PageState.IS_LOADING
-        val call = Client.getInstance().getApi().search(query)
-        call.enqueue(object : Callback<ResultList> {
-            override fun onResponse(call: Call<ResultList>, response: Response<ResultList>) {
-                val body = response.body()?.data
-                list.value = body
-                if (body!!.isNotEmpty()) {
-                    pageState.value = PageState.IS_LOADED
-                } else {
-                    pageState.value = PageState.IS_EMPTY
-                }
-            }
-
-            override fun onFailure(call: Call<ResultList>, t: Throwable) {
-                pageState.value = PageState.IS_ERROR
-            }
-        })
+    fun execLastQuery(callback: () -> Unit) {
+        execCall(makeCall(lastQuery), callback)
     }
 }

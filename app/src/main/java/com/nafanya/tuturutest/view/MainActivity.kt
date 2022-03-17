@@ -14,6 +14,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.gson.Gson
 import com.nafanya.tuturutest.R
 import com.nafanya.tuturutest.databinding.ActivityMainBinding
@@ -22,7 +23,7 @@ import com.nafanya.tuturutest.model.animeObjects.Anime
 import com.nafanya.tuturutest.viewModel.MainActivityViewModel
 import com.nafanya.tuturutest.viewModel.PageState
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListener {
 
     private lateinit var viewModel: MainActivityViewModel
     private lateinit var binding: ActivityMainBinding
@@ -34,15 +35,16 @@ class MainActivity : AppCompatActivity() {
         binding.search.setOnKeyListener { view, _, keyEvent ->
             if (keyEvent.keyCode == KeyEvent.KEYCODE_ENTER && keyEvent.action == KeyEvent.ACTION_UP) {
                 val text = (view as EditText).text.toString()
-                if (text.isEmpty() || text.isBlank()) {
-                    viewModel.getAll()
-                } else {
-                    viewModel.search(text)
-                }
+                viewModel.search(text)
                 // clearing focus from input
                 view.clearFocus()
             }
             true
+        }
+        // set refresh behavior
+        binding.refresh.setOnRefreshListener {
+            binding.refresh.isRefreshing = true
+            onRefresh()
         }
         viewModel = ViewModelProvider(this)[MainActivityViewModel::class.java]
         // observing page state
@@ -90,7 +92,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun onFirstLoading() {
-        viewModel.getAll()
+        viewModel.search("")
     }
 
     private fun onLoading() {
@@ -115,9 +117,15 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun onError() {
-        binding.error.visibility = View.VISIBLE
         binding.loader.visibility = View.GONE
         binding.recycler.visibility = View.GONE
-        binding.refresh.visibility = View.VISIBLE
+        binding.refresh.visibility = View.GONE
+        binding.error.visibility = View.VISIBLE
+    }
+
+    override fun onRefresh() {
+        viewModel.execLastQuery {
+            binding.refresh.isRefreshing = false
+        }
     }
 }
