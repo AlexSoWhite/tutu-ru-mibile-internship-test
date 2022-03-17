@@ -6,8 +6,9 @@ import android.os.Build
 import android.util.Pair
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.KeyEvent
 import android.view.View
-import androidx.appcompat.widget.SearchView
+import android.widget.EditText
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -29,31 +30,22 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
-        binding.search.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-            override fun onQueryTextSubmit(query: String?): Boolean {
-                query?.let {
-                    if (it.isEmpty() or it.isBlank()) {
-                        viewModel.getAll()
-                        true
-                    } else {
-                        viewModel.search(query)
-                        true
-                    }
+        // setting search behavior
+        binding.search.setOnKeyListener { view, _, keyEvent ->
+            if (keyEvent.keyCode == KeyEvent.KEYCODE_ENTER && keyEvent.action == KeyEvent.ACTION_UP) {
+                val text = (view as EditText).text.toString()
+                if (text.isEmpty() || text.isBlank()) {
+                    viewModel.getAll()
+                } else {
+                    viewModel.search(text)
                 }
-                return false
+                // clearing focus from input
+                view.clearFocus()
             }
-
-            override fun onQueryTextChange(newText: String?): Boolean {
-                newText?.let {
-                    if (it.isEmpty()) {
-                        viewModel.getAll()
-                        return true
-                    }
-                }
-                return false
-            }
-        })
+            true
+        }
         viewModel = ViewModelProvider(this)[MainActivityViewModel::class.java]
+        // observing page state
         val pageStateObserver = Observer<PageState> {
             when(it) {
                 PageState.IS_FIRST_LOADING -> onFirstLoading()
@@ -65,6 +57,7 @@ class MainActivity : AppCompatActivity() {
             }
         }
         viewModel.pageState.observe(this, pageStateObserver)
+        // observing list
         val listObserver = Observer<List<Anime>> {
             binding.recycler.adapter = Adapter(it) { anime, listItemBinding ->
                 startDetailActivity(anime, listItemBinding)
@@ -102,25 +95,29 @@ class MainActivity : AppCompatActivity() {
 
     private fun onLoading() {
         binding.loader.visibility = View.VISIBLE
-        binding.recycler.visibility = View.INVISIBLE
-        binding.error.visibility = View.INVISIBLE
+        binding.recycler.visibility = View.GONE
+        binding.refresh.visibility = View.GONE
+        binding.error.visibility = View.GONE
     }
 
     private fun onLoaded() {
-        binding.loader.visibility = View.INVISIBLE
+        binding.loader.visibility = View.GONE
         binding.recycler.visibility = View.VISIBLE
-        binding.error.visibility = View.INVISIBLE
+        binding.refresh.visibility = View.VISIBLE
+        binding.error.visibility = View.GONE
     }
 
     private fun onEmpty() {
-        binding.loader.visibility = View.INVISIBLE
-        binding.recycler.visibility = View.INVISIBLE
-        binding.error.visibility = View.INVISIBLE
+        binding.loader.visibility = View.GONE
+        binding.recycler.visibility = View.GONE
+        binding.refresh.visibility = View.VISIBLE
+        binding.error.visibility = View.GONE
     }
 
     private fun onError() {
         binding.error.visibility = View.VISIBLE
-        binding.loader.visibility = View.INVISIBLE
-        binding.recycler.visibility = View.INVISIBLE
+        binding.loader.visibility = View.GONE
+        binding.recycler.visibility = View.GONE
+        binding.refresh.visibility = View.VISIBLE
     }
 }
