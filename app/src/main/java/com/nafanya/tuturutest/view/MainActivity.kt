@@ -15,8 +15,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.gson.Gson
 import com.nafanya.tuturutest.R
 import com.nafanya.tuturutest.databinding.ActivityMainBinding
+import com.nafanya.tuturutest.databinding.AnimeListItemBinding
 import com.nafanya.tuturutest.model.animeObjects.Anime
 import com.nafanya.tuturutest.viewModel.MainActivityViewModel
+import com.nafanya.tuturutest.viewModel.PageState
 
 class MainActivity : AppCompatActivity() {
 
@@ -28,30 +30,72 @@ class MainActivity : AppCompatActivity() {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
         viewModel = ViewModelProvider(this)[MainActivityViewModel::class.java]
         viewModel.getAll()
-        val observer = Observer<List<Anime>> {
+        val pageStateObserver = Observer<PageState> {
+            when(it) {
+                PageState.IS_FIRST_LOADING -> onFirstLoading()
+                PageState.IS_LOADING -> onLoading()
+                PageState.IS_LOADED -> onLoaded()
+                PageState.IS_ERROR -> onError()
+                PageState.IS_EMPTY -> onEmpty()
+                else -> {}
+            }
+        }
+        viewModel.pageState.observe(this, pageStateObserver)
+        val listObserver = Observer<List<Anime>> {
             binding.recycler.adapter = Adapter(it) { anime, listItemBinding ->
-                var bundle: Bundle? = null
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
-                    val options = ActivityOptions.makeSceneTransitionAnimation(
-                        this,
-                        Pair.create(listItemBinding.image, getString(R.string.anime_item_image_transition))
-                    )
-                    bundle = options.toBundle()
-                }
-                val detailIntent = Intent(this, AnimeDetailActivity::class.java)
-                val jsonString = Gson().toJson(anime)
-                detailIntent.putExtra("anime", jsonString)
-                if (bundle == null) {
-                    startActivity(detailIntent)
-                } else {
-                    startActivity(detailIntent, bundle)
-                }
+                startDetailActivity(anime, listItemBinding)
             }
             binding.recycler.layoutManager = LinearLayoutManager(this)
             binding.recycler.addItemDecoration(
                 DividerItemDecoration(this, DividerItemDecoration.VERTICAL)
             )
         }
-        viewModel.list.observe(this, observer)
+        viewModel.list.observe(this, listObserver)
+    }
+
+    private fun startDetailActivity(anime: Anime, listItemBinding: AnimeListItemBinding) {
+        var bundle: Bundle? = null
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
+            val options = ActivityOptions.makeSceneTransitionAnimation(
+                this,
+                Pair.create(listItemBinding.image, getString(R.string.anime_item_image_transition))
+            )
+            bundle = options.toBundle()
+        }
+        val detailIntent = Intent(this, AnimeDetailActivity::class.java)
+        val jsonString = Gson().toJson(anime)
+        detailIntent.putExtra("anime", jsonString)
+        if (bundle == null) {
+            startActivity(detailIntent)
+        } else {
+            startActivity(detailIntent, bundle)
+        }
+    }
+
+    private fun onFirstLoading() {
+        onLoading()
+        viewModel.getAll()
+    }
+
+    private fun onLoading() {
+        binding.loader.visibility = View.VISIBLE
+        binding.recycler.visibility = View.INVISIBLE
+        binding.error.visibility = View.INVISIBLE
+    }
+
+    private fun onLoaded() {
+        binding.loader.visibility = View.INVISIBLE
+        binding.recycler.visibility = View.VISIBLE
+        binding.error.visibility = View.INVISIBLE
+    }
+
+    private fun onEmpty() {
+
+    }
+
+    private fun onError() {
+        binding.error.visibility = View.VISIBLE
+        binding.loader.visibility = View.INVISIBLE
+        binding.recycler.visibility = View.INVISIBLE
     }
 }

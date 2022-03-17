@@ -9,10 +9,22 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
+enum class PageState {
+    IS_FIRST_LOADING,
+    IS_LOADING,
+    IS_LOADED,
+    IS_EMPTY,
+    IS_ERROR
+}
+
 class MainActivityViewModel : ViewModel() {
 
     val list: MutableLiveData<List<Anime>> by lazy {
         MutableLiveData<List<Anime>>()
+    }
+
+    val pageState: MutableLiveData<PageState> by lazy {
+        MutableLiveData<PageState>(PageState.IS_LOADING)
     }
 
     fun getAll() {
@@ -21,12 +33,16 @@ class MainActivityViewModel : ViewModel() {
             override fun onResponse(call: Call<ResultList>, response: Response<ResultList>) {
                 val body = response.body()?.data
                 list.value = body
+                if (body!!.isNotEmpty()) {
+                    pageState.value = PageState.IS_LOADED
+                } else {
+                    pageState.value = PageState.IS_EMPTY
+                }
             }
 
             override fun onFailure(call: Call<ResultList>, t: Throwable) {
-                throw t
+                pageState.value = PageState.IS_ERROR
             }
-
         })
     }
 }
