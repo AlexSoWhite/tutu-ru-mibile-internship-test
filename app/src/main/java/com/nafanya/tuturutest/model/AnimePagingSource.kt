@@ -6,6 +6,7 @@ import androidx.paging.PagingState
 import com.nafanya.tuturutest.viewModel.PageState
 import retrofit2.HttpException
 import java.io.IOException
+
 class AnimePagingSource(
     private val query: String,
     private val pageState: MutableLiveData<PageState>
@@ -38,8 +39,10 @@ class AnimePagingSource(
                 nextKey = if (response.isEmpty()) null else page + 10
             )
         } catch (exception: IOException) {
+            pageState.value = PageState.IS_ERROR
             LoadResult.Error(exception)
         } catch (exception: HttpException) {
+            pageState.value = PageState.IS_ERROR
             LoadResult.Error(exception)
         }
     }

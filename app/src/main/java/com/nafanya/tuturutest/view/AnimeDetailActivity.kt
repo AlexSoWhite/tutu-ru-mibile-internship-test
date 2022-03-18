@@ -1,15 +1,12 @@
 package com.nafanya.tuturutest.view
 
-import android.os.Build
 import android.os.Bundle
-import android.transition.Transition
 import android.view.MenuItem
 import android.view.animation.AlphaAnimation
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import com.bumptech.glide.Glide
-import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.google.gson.Gson
 import com.nafanya.tuturutest.R
 import com.nafanya.tuturutest.databinding.AnimeItemDetailBinding
