@@ -32,7 +32,8 @@ class MainActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListener {
 
     private lateinit var viewModel: MainActivityViewModel
     private lateinit var binding: ActivityMainBinding
-    private lateinit var adapter: AnimeListAdapter
+    private lateinit var pagedAdapter: AnimeListAdapter
+    private lateinit var staticListAdapter: StaticListAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -65,11 +66,11 @@ class MainActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListener {
             }
         }
         viewModel.pageState.observe(this, pageStateObserver)
-        viewModel.setRepo()
-        adapter = AnimeListAdapter {anime, listItemBinding ->
+        viewModel.setRepo(applicationContext)
+        pagedAdapter = AnimeListAdapter {anime, listItemBinding ->
             startDetailActivity(anime, listItemBinding)
         }
-        binding.recycler.adapter = adapter
+        binding.recycler.adapter = pagedAdapter
         binding.recycler.layoutManager = LinearLayoutManager(this)
         binding.recycler.addItemDecoration(
             DividerItemDecoration(this, DividerItemDecoration.VERTICAL)
@@ -79,7 +80,9 @@ class MainActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListener {
     private fun search(query: String) {
         lifecycleScope.launch {
             viewModel.letAnimeFlow(query).distinctUntilChanged().collectLatest {
-                adapter.submitData(it)
+                pagedAdapter.submitData(it)
+                binding.recycler.adapter = pagedAdapter
+                viewModel.putToCache(pagedAdapter.snapshot().items)
             }
         }
     }
@@ -129,6 +132,12 @@ class MainActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListener {
         binding.loader.visibility = View.GONE
         binding.recycler.visibility = View.GONE
         binding.empty.visibility = View.GONE
+        viewModel.loadFromCache {
+            staticListAdapter = StaticListAdapter(it) { anime, binding ->
+                startDetailActivity(anime, binding)
+            }
+            binding.recycler.adapter = staticListAdapter
+        }
         Toast.makeText(
             this,
             "An error occurred",

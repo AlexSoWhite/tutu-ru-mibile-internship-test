@@ -1,11 +1,16 @@
 package com.nafanya.tuturutest.viewModel
 
+import android.content.Context
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import com.nafanya.tuturutest.model.Anime
+import com.nafanya.tuturutest.model.LocalStorageProvider
 import com.nafanya.tuturutest.model.Repository
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.launch
 
 enum class PageState {
     IS_FIRST_LOADING,
@@ -24,9 +29,11 @@ class MainActivityViewModel : ViewModel() {
     private lateinit var lastQuery: String
 
     private lateinit var repository: Repository
+    private lateinit var localStorageProvider: LocalStorageProvider
 
-    fun setRepo() {
+    fun setRepo(context: Context) {
         repository = Repository()
+        localStorageProvider = LocalStorageProvider(context)
     }
 
     fun letAnimeFlow(searchText: String): Flow<PagingData<Anime>> {
@@ -42,4 +49,21 @@ class MainActivityViewModel : ViewModel() {
         callback()
     }
 
+    fun putToCache(list: List<Anime>) {
+        viewModelScope.launch {
+            localStorageProvider.put(list)
+        }
+    }
+
+    fun loadFromCache(callback: (List<Anime>) -> Unit) {
+        viewModelScope.launch {
+            val list = localStorageProvider.get()
+            if (list.isEmpty()) {
+                pageState.value = PageState.IS_EMPTY
+            } else {
+                pageState.value = PageState.IS_LOADED
+            }
+            callback(list)
+        }
+    }
 }

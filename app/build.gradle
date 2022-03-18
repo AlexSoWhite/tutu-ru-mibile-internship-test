@@ -61,4 +61,7 @@ dependencies {
 
     // paging
     implementation 'androidx.paging:paging-runtime-ktx:3.1.1'
+
+    // hawk for caching anime
+    implementation 'com.orhanobut:hawk:2.0.1'
 }
