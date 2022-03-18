@@ -16,7 +16,11 @@ class Repository {
         return PagingConfig(pageSize = DEFAULT_PAGE_SIZE, enablePlaceholders = true)
     }
 
-    fun letAnimeFlow(query: String, pageState: MutableLiveData<PageState>, pagingConfig: PagingConfig = getDefaultPageConfig()): Flow<PagingData<Anime>> {
+    fun letAnimeFlow(
+        query: String,
+        pageState: MutableLiveData<PageState>,
+        pagingConfig: PagingConfig = getDefaultPageConfig()
+    ): Flow<PagingData<Anime>> {
         return Pager(
             config = pagingConfig,
             pagingSourceFactory = { AnimePagingSource(query, pageState) }

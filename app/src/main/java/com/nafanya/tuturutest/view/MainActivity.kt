@@ -81,8 +81,13 @@ class MainActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListener {
         lifecycleScope.launch {
             viewModel.letAnimeFlow(query).distinctUntilChanged().collectLatest {
                 pagedAdapter.submitData(it)
-                binding.recycler.adapter = pagedAdapter
-                viewModel.putToCache(pagedAdapter.snapshot().items)
+                if (binding.recycler.adapter is StaticListAdapter) {
+                    binding.recycler.adapter = pagedAdapter
+                }
+                val list = pagedAdapter.snapshot().items
+                if (list.isNotEmpty()) {
+                    viewModel.putToCache(list)
+                }
             }
         }
     }
@@ -146,8 +151,7 @@ class MainActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListener {
     }
 
     override fun onRefresh() {
-        viewModel.execLastQuery {
-            binding.refresh.isRefreshing = false
-        }
+        pagedAdapter.refresh()
+        binding.refresh.isRefreshing = false
     }
 }

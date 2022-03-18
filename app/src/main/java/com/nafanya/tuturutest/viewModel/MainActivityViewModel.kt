@@ -8,7 +8,6 @@ import androidx.paging.PagingData
 import com.nafanya.tuturutest.model.Anime
 import com.nafanya.tuturutest.model.LocalStorageProvider
 import com.nafanya.tuturutest.model.Repository
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 
@@ -42,11 +41,6 @@ class MainActivityViewModel : ViewModel() {
         }
         lastQuery = searchText
         return repository.letAnimeFlow(searchText, pageState)
-    }
-
-    fun execLastQuery(callback: () -> Unit) {
-        letAnimeFlow(lastQuery)
-        callback()
     }
 
     fun putToCache(list: List<Anime>) {
