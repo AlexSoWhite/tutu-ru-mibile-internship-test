@@ -11,12 +11,20 @@ class AnimePagingSource(
     private val query: String,
     private val pageState: MutableLiveData<PageState>
 ) : PagingSource<Int, Anime>() {
+
+    private var previousPage = 0
+
     override fun getRefreshKey(state: PagingState<Int, Anime>): Int? {
         return null
     }
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Anime> {
         val page = params.key ?: 0
+        if(previousPage < page) {
+            pageState.value = PageState.IS_LOADING_MORE
+        } else {
+            previousPage = 0
+        }
         return try {
             val response = if (query.isEmpty()) {
                 Client.getInstance().getApi().getAll(page).data

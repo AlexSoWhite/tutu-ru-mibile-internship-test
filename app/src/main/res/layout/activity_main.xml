@@ -38,6 +38,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
@@ -46,9 +47,8 @@
                 android:layout_width="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:layout_height="wrap_content"
-                android:paddingBottom="50dp"
+                android:paddingBottom="35dp"
                 android:clipToPadding="false"/>
-
 
         </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
@@ -74,6 +74,17 @@
             app:layout_constraintTop_toTopOf="parent"
             android:visibility="invisible"
             tools:visibility="visible"/>
+
+        <ProgressBar
+            android:id="@+id/load_more"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            tools:visibility="visible"/>
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </LinearLayout>

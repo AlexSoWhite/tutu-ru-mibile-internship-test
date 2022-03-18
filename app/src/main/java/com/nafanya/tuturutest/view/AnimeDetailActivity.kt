@@ -2,7 +2,9 @@ package com.nafanya.tuturutest.view
 
 import android.os.Bundle
 import android.view.MenuItem
+import android.view.View
 import android.view.animation.AlphaAnimation
+import android.widget.TextView
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
@@ -27,8 +29,12 @@ class AnimeDetailActivity : AppCompatActivity() {
         // inflate activity
         binding = DataBindingUtil.setContentView(this, R.layout.anime_item_detail)
         binding.anime = anime
-        binding.userCount.text = getString(R.string.users, anime.attributes.userCount.toString())
-        binding.episodes.text = getString(R.string.episodes, anime.attributes.episodeCount.toString())
+        inflateText(binding.title, R.string.title, anime.attributes.canonicalTitle)
+        inflateText(binding.rating, R.string.rating, anime.attributes.averageRating)
+        inflateText(binding.ageRating, R.string.age_rating, anime.attributes.ageRatingGuide, )
+        inflateText(binding.userCount, R.string.users, anime.attributes.userCount.toString())
+        inflateText(binding.status, R.string.status, anime.attributes.status)
+        inflateText(binding.episodes, R.string.episodes, anime.attributes.episodeCount.toString())
         // animate text
         val alphaAnimation = AlphaAnimation(0.0f, 1.0f)
         alphaAnimation.duration = 400L
@@ -38,7 +44,20 @@ class AnimeDetailActivity : AppCompatActivity() {
         binding.descriptionHeader.startAnimation(alphaAnimation)
         Glide.with(this)
             .load("https://media.kitsu.io/anime/poster_images/${anime.id}/large.jpg")
+            .placeholder(R.drawable.default_placeholder)
             .into(binding.image)
+    }
+
+    private fun inflateText(
+        view: TextView,
+        stringResource: Int,
+        text: String?
+    ) {
+        if (text != null) {
+            view.text = getString(stringResource, text)
+        } else {
+            view.visibility = View.GONE
+        }
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

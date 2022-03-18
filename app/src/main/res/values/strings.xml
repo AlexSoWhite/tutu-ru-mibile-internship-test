@@ -2,8 +2,12 @@
     <string name="app_name">TutuRuTest</string>
     <string name="users">Users: %1$s</string>
     <string name="description">Description:</string>
+    <string name="title">Title: %1$s</string>
+    <string name="rating">Rating: %1$s</string>
+    <string name="age_rating">Age rating: %1$s</string>
+    <string name="status">Status: %1$s</string>
     <string name="episodes">Number of episodes: %1$s</string>
-    <string name="anime_item_image_transition">anime_item_image_transition</string>
+    <string name="anime_transition">anime_transition</string>
     <string name="anime_title">Anime title</string>
     <string name="nothing_found">Nothing found</string>
 </resources>

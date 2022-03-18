@@ -14,6 +14,7 @@ import kotlinx.coroutines.launch
 enum class PageState {
     IS_FIRST_LOADING,
     IS_LOADING,
+    IS_LOADING_MORE,
     IS_LOADED,
     IS_EMPTY,
     IS_ERROR

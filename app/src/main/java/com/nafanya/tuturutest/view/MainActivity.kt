@@ -2,6 +2,7 @@ package com.nafanya.tuturutest.view
 
 import android.app.ActivityOptions
 import android.content.Intent
+import android.content.res.Configuration
 import android.os.Build
 import android.util.Pair
 import androidx.appcompat.app.AppCompatActivity
@@ -59,6 +60,7 @@ class MainActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListener {
             when(it) {
                 PageState.IS_FIRST_LOADING -> onFirstLoading()
                 PageState.IS_LOADING -> onLoading()
+                PageState.IS_LOADING_MORE -> onLoadingMore()
                 PageState.IS_LOADED -> onLoaded()
                 PageState.IS_ERROR -> onError()
                 PageState.IS_EMPTY -> onEmpty()
@@ -97,7 +99,7 @@ class MainActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListener {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
             val options = ActivityOptions.makeSceneTransitionAnimation(
                 this,
-                Pair.create(listItemBinding.image, getString(R.string.anime_item_image_transition))
+                Pair.create(listItemBinding.image, getString(R.string.anime_transition))
             )
             bundle = options.toBundle()
         }
@@ -119,18 +121,21 @@ class MainActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListener {
         binding.loader.visibility = View.VISIBLE
         binding.recycler.visibility = View.GONE
         binding.empty.visibility = View.GONE
+        binding.loadMore.visibility = View.GONE
     }
 
     private fun onLoaded() {
         binding.loader.visibility = View.GONE
         binding.recycler.visibility = View.VISIBLE
         binding.empty.visibility = View.GONE
+        binding.loadMore.visibility = View.GONE
     }
 
     private fun onEmpty() {
         binding.loader.visibility = View.GONE
         binding.recycler.visibility = View.GONE
         binding.empty.visibility = View.VISIBLE
+        binding.loadMore.visibility = View.GONE
     }
 
     private fun onError() {
@@ -148,6 +153,10 @@ class MainActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListener {
             "An error occurred",
             Toast.LENGTH_SHORT
         ).show()
+    }
+
+    private fun onLoadingMore() {
+        binding.loadMore.visibility = View.VISIBLE
     }
 
     override fun onRefresh() {

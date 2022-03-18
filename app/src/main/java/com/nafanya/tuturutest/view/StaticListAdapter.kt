@@ -37,8 +37,14 @@ class StaticListAdapter(
 
         fun bind(anime: Anime) {
             binding.anime = anime
+            if (anime.attributes.averageRating != null) {
+                binding.rating.text = itemView.context.getString(R.string.rating, anime.attributes.averageRating)
+            } else {
+                binding.rating.visibility = View.GONE
+            }
             Glide.with(itemView)
                 .load("https://media.kitsu.io/anime/poster_images/${anime.id}/large.jpg")
+                .placeholder(R.drawable.default_placeholder)
                 .into(binding.image)
             binding.item.setOnClickListener {
                 callback(anime, binding)

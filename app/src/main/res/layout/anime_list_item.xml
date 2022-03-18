@@ -17,7 +17,7 @@
         android:id="@+id/image"
         android:layout_width="80dp"
         android:layout_height="100dp"
-        android:transitionName="@string/anime_item_image_transition"/>
+        android:transitionName="@string/anime_transition"/>
 
     <LinearLayout
         android:layout_marginStart="5dp"
@@ -28,8 +28,15 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@{anime.attributes.canonicalTitle+' '+'('+anime.attributes.averageRating+')'}"
-            tools:text="Токийский гуль (88.4)"/>
+            android:text="@{anime.attributes.canonicalTitle}"
+            tools:text="Токийский гуль"/>
+
+        <TextView
+            android:id="@+id/rating"
+            android:layout_marginTop="5dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="Rating: 88.5"/>
 
         <TextView
             android:id="@+id/description_detail"
