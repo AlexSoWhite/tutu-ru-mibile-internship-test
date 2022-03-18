@@ -3,7 +3,7 @@ package com.nafanya.tuturutest.model
 import android.content.Context
 import com.orhanobut.hawk.Hawk
 
-class LocalStorageProvider(private val context: Context) {
+class LocalStorageProvider(context: Context) {
 
     init {
         Hawk.init(context).build()

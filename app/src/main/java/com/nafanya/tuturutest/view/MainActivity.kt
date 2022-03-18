@@ -2,7 +2,6 @@ package com.nafanya.tuturutest.view
 
 import android.app.ActivityOptions
 import android.content.Intent
-import android.content.res.Configuration
 import android.os.Build
 import android.util.Pair
 import androidx.appcompat.app.AppCompatActivity
