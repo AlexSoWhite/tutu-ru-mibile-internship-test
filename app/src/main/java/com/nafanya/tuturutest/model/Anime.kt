@@ -31,22 +31,7 @@ data class Anime(
     @SerializedName("id")
     @Expose
     val id: String,
-    @SerializedName("type")
-    @Expose
-    val type: String,
     @SerializedName("attributes")
     @Expose
-    val attributes: Attributes,
-    @SerializedName("favoritesCount")
-    @Expose
-    val favoritesCount: Int,
-    @SerializedName("popularityRank")
-    @Expose
-    val popularityRank: Int,
-    @SerializedName("episodeLength")
-    @Expose
-    val episodeLength: Int,
-    @SerializedName("totalLength")
-    @Expose
-    val totalLength: Int
+    val attributes: Attributes
 )
