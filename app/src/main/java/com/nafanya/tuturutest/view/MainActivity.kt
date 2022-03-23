@@ -67,7 +67,7 @@ class MainActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListener {
             }
         }
         viewModel.pageState.observe(this, pageStateObserver)
-        viewModel.setRepo(applicationContext)
+        viewModel.setRepo()
         pagedAdapter = AnimeListAdapter {anime, listItemBinding ->
             startDetailActivity(anime, listItemBinding)
         }

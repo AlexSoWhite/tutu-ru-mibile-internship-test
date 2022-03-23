@@ -1,8 +1,8 @@
 package com.nafanya.tuturutest.viewModel
 
-import android.content.Context
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import com.nafanya.tuturutest.model.Anime
@@ -20,7 +20,9 @@ enum class PageState {
     IS_ERROR
 }
 
-class MainActivityViewModel : ViewModel() {
+class MainActivityViewModel(
+    application: Application
+) : AndroidViewModel(application) {
 
     val pageState: MutableLiveData<PageState> by lazy {
         MutableLiveData<PageState>(PageState.IS_FIRST_LOADING)
@@ -31,9 +33,9 @@ class MainActivityViewModel : ViewModel() {
     private lateinit var repository: Repository
     private lateinit var localStorageProvider: LocalStorageProvider
 
-    fun setRepo(context: Context) {
+    fun setRepo() {
         repository = Repository()
-        localStorageProvider = LocalStorageProvider(context)
+        localStorageProvider = LocalStorageProvider(getApplication())
     }
 
     fun letAnimeFlow(searchText: String): Flow<PagingData<Anime>> {
